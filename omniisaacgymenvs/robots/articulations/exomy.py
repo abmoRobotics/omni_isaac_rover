@@ -59,7 +59,7 @@ class Exomy(Robot):
             if assets_root_path is None:
                 carb.log_error("Could not find Isaac Sim assets folder")
             #self._usd_path ="/home/anton/OmniIsaacGymEnvs/omniisaacgymenvs/robots/articulations/cartpole.usd"#assets_root_path + "/Projects/usd/exomy/exomy_model/cartpole.usd" #"http://localhost:8080/omniverse://100.127.177.125/Projects/usd/exomy/exomy_model/Cartpole.usd"#"./cartpole.usd"#assets_root_path + "/Isaac/Robots/Cartpole/cartpole.usd"#/home/anton/OmniIsaacGymEnvs/omniisaacgymenvs/robots/articulations/cartpole.usd"#assets_root_path + "/Isaac/Robots/Cartpole/cartpole.usd"
-            self._usd_path = assets_root_path + "/Projects/usd/exomy/exomy_model/exomy_model2.usd"
+            self._usd_path = assets_root_path + "/Projects/usd/exomy/exomy_model/exomy_model3.usd"
         print("hej")
         print(self._usd_path)
         print(prim_path)

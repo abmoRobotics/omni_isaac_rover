@@ -60,7 +60,7 @@ class ExomyTask(RLTask):
         self._max_episode_length = 500
 
         self._num_observations = 4
-        self._num_actions = 12
+        self._num_actions = 2
 
         RLTask.__init__(self, name, env)
         return
@@ -100,25 +100,23 @@ class ExomyTask(RLTask):
         # return observations
 
     def pre_physics_step(self, actions) -> None:
-        pass
-        # reset_env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
-        # if len(reset_env_ids) > 0:
-        #     self.reset_idx(reset_env_ids)
+        reset_env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
+        if len(reset_env_ids) > 0:
+            self.reset_idx(reset_env_ids)
 
-        # actions = actions.to(self._device)
-
-        # forces = torch.zeros((self._cartpoles.count, self._cartpoles.num_dof), dtype=torch.float32, device=self._device)
-        # forces[:, self._cart_dof_idx] = self._max_push_effort * actions[:, 0]
-
-        # indices = torch.arange(self._cartpoles.count, dtype=torch.int32, device=self._device)
-        # self._cartpoles.set_joint_efforts(forces, indices=indices)
+        forces = torch.zeros((self._cartpoles.count, self._cartpoles.num_dof), dtype=torch.float32, device=self._device)
+        forces[:, self._FR_Steer] = 4#self._max_push_effort * actions[:, 0]
+        forces[:, self._FL_Steer] = 4#self._max_push_effort * actions[:, 0]
+        forces[:, self._RR_Steer] = 4
+        forces[:, self._RL_Steer] = 4
+        indices = torch.arange(self._cartpoles.count, dtype=torch.int32, device=self._device)
+        self._cartpoles.set_joint_positions(forces, indices=indices)
 
     def reset_idx(self, env_ids):
-        pass
-        # num_resets = len(env_ids)
+        num_resets = len(env_ids)
 
         # # randomize DOF positions
-        # dof_pos = torch.zeros((num_resets, self._cartpoles.num_dof), device=self._device)
+        dof_pos = torch.zeros((num_resets, self._cartpoles.num_dof), device=self._device)
         # dof_pos[:, self._cart_dof_idx] = 1.0 * (1.0 - 2.0 * torch.rand(num_resets, device=self._device))
         # dof_pos[:, self._pole_dof_idx] = 0.125 * math.pi * (1.0 - 2.0 * torch.rand(num_resets, device=self._device))
 
@@ -137,12 +135,13 @@ class ExomyTask(RLTask):
         # self.progress_buf[env_ids] = 0
 
     def post_reset(self):
-        pass
-        # self._cart_dof_idx = self._cartpoles.get_dof_index("cartJoint")
-        # self._pole_dof_idx = self._cartpoles.get_dof_index("poleJoint")
+        self._FR_Steer = self._cartpoles.get_dof_index("FR_Steer")
+        self._FL_Steer = self._cartpoles.get_dof_index("FL_Steer")
+        self._RL_Steer = self._cartpoles.get_dof_index("RL_Steer")
+        self._RR_Steer = self._cartpoles.get_dof_index("RR_Steer")
         # # randomize all envs
-        # indices = torch.arange(self._cartpoles.count, dtype=torch.int64, device=self._device)
-        # self.reset_idx(indices)
+        indices = torch.arange(self._cartpoles.count, dtype=torch.int64, device=self._device)
+        self.reset_idx(indices)
 
     def calculate_metrics(self) -> None:
         pass
